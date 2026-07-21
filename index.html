@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZRM Live</title>
 
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🚑 ZRM Live</h1>
+
+    <div class="form">
+
+        <input
+            type="text"
+            id="team"
+            placeholder="Nr zespołu (np. W02 lub 001)"
+        >
+
+        <input
+            type="time"
+            id="time"
+        >
+
+        <button id="nowButton">
+            🕒 Teraz
+        </button>
+
+        <button id="addButton">
+            ➕ Dodaj
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Zespół</th>
+                <th>Godzina</th>
+                <th>Akcja</th>
+            </tr>
+        </thead>
+
+        <tbody id="tableBody">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
