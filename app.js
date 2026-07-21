@@ -1,101 +1,121 @@
+import {
+    db,
+    collection,
+    addDoc,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    query,
+    orderBy,
+    getDocs
+} from "./firebase.js";
+
 const teamInput = document.getElementById("team");
 const timeInput = document.getElementById("time");
 const addButton = document.getElementById("addButton");
 const nowButton = document.getElementById("nowButton");
 const tableBody = document.getElementById("tableBody");
 
-let teams = [];
+const teamsRef = collection(db, "teams");
 
-// Ustaw aktualną godzinę
 function setCurrentTime() {
+
     const now = new Date();
 
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const h = String(now.getHours()).padStart(2, "0");
+    const m = String(now.getMinutes()).padStart(2, "0");
 
-    timeInput.value = `${hours}:${minutes}`;
-}
-
-// Wyświetlenie tabeli
-function renderTable() {
-
-    tableBody.innerHTML = "";
-
-    teams.sort((a, b) => a.time.localeCompare(b.time));
-
-    teams.forEach((team, index) => {
-
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${team.number}</td>
-            <td>${team.time}</td>
-            <td>
-                <button class="finishButton" data-index="${index}">
-                    ✅
-                </button>
-            </td>
-        `;
-
-        tableBody.appendChild(row);
-
-    });
-
-    document.querySelectorAll(".finishButton").forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const index = button.dataset.index;
-
-            teams.splice(index, 1);
-
-            renderTable();
-
-        });
-
-    });
+    timeInput.value = `${h}:${m}`;
 
 }
 
-// Dodawanie
-addButton.addEventListener("click", () => {
+setCurrentTime();
+
+nowButton.addEventListener("click", setCurrentTime);
+
+addButton.addEventListener("click", addTeam);
+
+async function addTeam() {
 
     const number = teamInput.value.trim().toUpperCase();
     const time = timeInput.value;
 
-    if (number === "" || time === "") {
+    if (!number || !time) {
 
-        alert("Uzupełnij numer zespołu i godzinę.");
+        alert("Uzupełnij dane.");
 
         return;
 
     }
 
-    const exists = teams.find(t => t.number === number);
+    const snapshot = await getDocs(teamsRef);
+
+    let exists = false;
+
+    snapshot.forEach(doc => {
+
+        if (doc.data().number === number) {
+
+            exists = true;
+
+        }
+
+    });
 
     if (exists) {
 
-        alert("Ten zespół już znajduje się na liście.");
+        alert("Ten zespół już jest na liście.");
 
         return;
 
     }
 
-    teams.push({
+    await addDoc(teamsRef, {
 
         number,
-        time
+        time,
+        createdAt: Date.now()
 
     });
 
     teamInput.value = "";
 
-    renderTable();
+    setCurrentTime();
+
+}
+
+const q = query(teamsRef, orderBy("time"));
+
+onSnapshot(q, snapshot => {
+
+    tableBody.innerHTML = "";
+
+    snapshot.forEach(document => {
+
+        const data = document.data();
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${data.number}</td>
+            <td>${data.time}</td>
+            <td>
+                <button class="finishButton">
+                    ✅
+                </button>
+            </td>
+        `;
+
+        row
+            .querySelector(".finishButton")
+            .addEventListener("click", async () => {
+
+                await deleteDoc(doc(db, "teams", document.id));
+
+            });
+
+        tableBody.appendChild(row);
+
+    });
 
 });
-
-// Aktualna godzina
-nowButton.addEventListener("click", setCurrentTime);
-
-// Po uruchomieniu strony
-setCurrentTime();
