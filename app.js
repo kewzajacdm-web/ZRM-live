@@ -52,7 +52,7 @@ async function addTeam() {
 
     let exists = false;
 
-    snapshot.forEach(doc => {
+    snapshot.forEach(docSnap => {
 
         if (doc.data().number === number) {
 
@@ -92,7 +92,7 @@ onSnapshot(q, snapshot => {
 
     snapshot.forEach(document => {
 
-        const data = document.data();
+       const data = docSnap.data();
 
         const row = document.createElement("tr");
 
