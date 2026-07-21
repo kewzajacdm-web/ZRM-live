@@ -9,16 +9,17 @@ import {
     onSnapshot,
     query,
     orderBy,
-    getDocs
+    getDocs,
+    where
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "TWOJE_API_KEY",
+    apiKey: "AIzaSyAfo-bpp0mZqq0BecnQo7yKrmEg5VKzPHY",
     authDomain: "checklista-d39c0.firebaseapp.com",
     projectId: "checklista-d39c0",
     storageBucket: "checklista-d39c0.firebasestorage.app",
     messagingSenderId: "1077383270775",
-    appId: "TWOJE_APP_ID"
+    appId: "1:1077383270775:web:c0e49a0d7de410bf11d172"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -34,5 +35,6 @@ export {
     onSnapshot,
     query,
     orderBy,
-    getDocs
+    getDocs,
+    where
 };
